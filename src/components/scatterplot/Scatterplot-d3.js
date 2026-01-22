@@ -63,13 +63,25 @@ class ScatterplotD3 {
             .transition().duration(this.transitionDuration)
             .attr("transform", (item)=>{
                 // use scales to return shape position from data values
-                // return "translate(,)"
+                return "translate("+this.xScale(item[xAttribute])+","+this.yScale(item[yAttribute])+")";
             })
         ;
         this.changeBorderAndOpacity(selection, false)
     }
 
     highlightSelectedItems(selectedItems){
+        this.svg.selectAll(".markerG")
+            // all elements with the class .cellG (empty the first time)
+            .data(selectedItems,(itemData)=>itemData.index)
+            .join(
+                enter => {},
+                update => {
+                    this.changeBorderAndOpacity(update, true);
+                },
+                exit => {
+                    this.changeBorderAndOpacity(exit, false);
+                },
+            );
         // use pattern update to change the border and opacity of objects:
         //      - call this.changeBorderAndOpacity(selection,true) for objects in selectedItems
         //      - this.changeBorderAndOpacity(selection,false) for objects not in selectedItems
@@ -77,10 +89,23 @@ class ScatterplotD3 {
 
     updateAxis = function(visData,xAttribute,yAttribute){
         // compute min max using d3.min/max(visData.map(item=>item.attribute))
-        // this.xScale.domain(...);
-        // this.yScale.domain(...);
+        const minX = d3.min(visData.map(item=>item[xAttribute]))
+        const maxX = d3.max(visData.map(item=>item[xAttribute]))
+        const minY = d3.min(visData.map(item=>item[yAttribute]))
+        const maxY = d3.max(visData.map(item=>item[yAttribute]))
+        this.xScale.domain([minX,maxX]);
+        this.yScale.domain([minY,maxY]);
 
         // create axis with computed scales
+        // .xAxisG and .yAxisG are initialized in create() function
+        this.svg.select(".xAxisG")
+            .transition().duration(500)
+            .call(d3.axisBottom(this.xScale))
+        ;
+        this.svg.select(".yAxisG")
+            .transition().duration(500)
+            .call(d3.axisLeft(this.yScale))
+        ;
     }
 
 

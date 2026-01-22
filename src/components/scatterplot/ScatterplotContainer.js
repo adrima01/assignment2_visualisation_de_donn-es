@@ -5,9 +5,11 @@ import {useSelector, useDispatch} from 'react-redux'
 import ScatterplotD3 from './Scatterplot-d3';
 
 // TODO: import action methods from reducers
+import { setSelectedItems } from '../../redux/ItemInteractionSlice'
 
 function ScatterplotContainer({xAttributeName, yAttributeName}){
     const visData = useSelector(state =>state.dataSet)
+    const selectedItems = useSelector(state => state.itemInteraction.selectedItems);
     const dispatch = useDispatch();
 
     // every time the component re-render
@@ -52,6 +54,7 @@ function ScatterplotContainer({xAttributeName, yAttributeName}){
         console.log("ScatterplotContainer useEffect with dependency [scatterplotData, xAttribute, yAttribute, scatterplotControllerMethods], called each time scatterplotData changes...");
 
         const handleOnClick = function(itemData){
+            dispatch(setSelectedItems([itemData]))
         }
         const handleOnMouseEnter = function(itemData){
         }
@@ -65,8 +68,15 @@ function ScatterplotContainer({xAttributeName, yAttributeName}){
         }
 
         // get the current instance of scatterplotD3 from the Ref...
+        const scatterplotD3 = scatterplotD3Ref.current;
         // call renderScatterplot of ScatterplotD3...;
-    },[visData,dispatch]);// if dependencies, useEffect is called after each data update, in our case only visData changes.
+        scatterplotD3.renderScatterplot(visData, xAttributeName, yAttributeName, controllerMethods);
+    },[visData, xAttributeName, yAttributeName, dispatch]);// if dependencies, useEffect is called after each data update, in our case only visData changes.
+
+    useEffect(()=>{
+        const scatterplotD3 = scatterplotD3Ref.current;
+        scatterplotD3.highlightSelectedItems(selectedItems);
+    },[selectedItems])
 
     return(
         <div ref={divContainerRef} className="scatterplotDivContainer col2">
