@@ -1,30 +1,72 @@
 import './App.css';
-import { useEffect} from 'react';
-import { useDispatch } from 'react-redux'
-// here import other dependencies
-import { getDataSet } from './redux/DataSetSlice'
-import ScatterplotContainer from './components/scatterplot/ScatterplotContainer';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getDataSet } from './redux/DataSetSlice';
 
-// a component is a piece of code which render a part of the user interface
+import ScatterplotContainer from './components/scatterplot/ScatterplotContainer';
+import HierarchyContainer from './components/hierarchy/HierarchyContainer';
+
 function App() {
   const dispatch = useDispatch();
-  // every time the component re-render
-  useEffect(()=>{
-      console.log("App useEffect (called each time App re-renders)");
-  }); // if no second parameter, useEffect is called at each re-render
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(getDataSet());
-  },[dispatch])
-  return (
-    <div className="App">
-        <div id={"MultiviewContainer"} className={"row"}>
-          {/*<ScatterplotContainer xAttributeName={"Temperature"} yAttributeName={"RentedBikeCount"}/>
-          <ScatterplotContainer xAttributeName={"Humidity"} yAttributeName={"RentedBikeCount"}/>*/}
-          <ScatterplotContainer xAttributeName={"population"} yAttributeName={"ViolentCrimesPerPop"}/>
-          <ScatterplotContainer xAttributeName={"medIncome"} yAttributeName={"ViolentCrimesPerPop"}/>
+  }, [dispatch]);
 
+  return (
+    <div className="App" style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      <header>
+        <h1>City Finder: Criminality vs. Income</h1>
+      </header>
+      
+      <div className="main-content" style={{ 
+        display: 'flex', 
+        flexDirection: 'row', 
+        height: '80vh',
+        padding: '20px', 
+        gap: '20px',
+        alignItems: 'stretch' 
+      }}>
+        
+        <div style={{ 
+          flex: '1',
+          border: '1px solid #ddd', 
+          borderRadius: '8px', 
+          padding: '10px',
+          background: '#fff',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          <h3 style={{ margin: '0 0 10px 0' }}>Scatterplot</h3>
+          <div style={{ flex: 1, minHeight: 0 }}> {}
+            <ScatterplotContainer 
+              xAttributeName={"medIncome"} 
+              yAttributeName={"ViolentCrimesPerPop"} 
+            />
+          </div>
         </div>
+
+
+        <div style={{ 
+          flex: '1',
+          border: '1px solid #ddd', 
+          borderRadius: '8px', 
+          padding: '10px',
+          background: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden'
+        }}>
+          <h3 style={{ margin: '0 0 10px 0' }}>Hierarchy: State & Community</h3>
+          <div style={{ flex: 1, minHeight: 0, position: 'relative' }}> 
+            <HierarchyContainer 
+              sizeAttribute={"population"} 
+              colorAttribute={"ViolentCrimesPerPop"} 
+            />
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }

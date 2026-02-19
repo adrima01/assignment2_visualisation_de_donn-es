@@ -110,6 +110,10 @@ class ScatterplotD3 {
 
 
     renderScatterplot = function (visData, xAttribute, yAttribute, controllerMethods){
+
+        //STRATIFY ICI??????
+
+        
         console.log("render scatterplot with a new data list ...")
 
         // build the size scales and x,y axis
@@ -150,6 +154,39 @@ class ScatterplotD3 {
 
     clear = function(){
         d3.select(this.el).selectAll("*").remove();
+    }
+
+
+    renderBrush = function(visData, xAttribute, yAttribute, dispatch, setSelectedItems) {
+        // Falls bereits ein Brush existiert, entfernen oder überschreiben
+        this.svg.select(".brush").remove();
+
+        const brush = d3.brush()
+            .extent([[0, 0], [this.width, this.height]])
+            .on("start brush end", (event) => {
+                const { selection } = event;
+                let selectedData = [];
+
+                if (selection) {
+                    const [[x0, y0], [x1, y1]] = selection;
+
+                    // Wir nutzen die Logik aus deinem Beispiel, passen sie aber an dein Datenmodell an
+                    selectedData = visData.filter(d => {
+                        const posX = this.xScale(d[xAttribute]);
+                        const posY = this.yScale(d[yAttribute]);
+                        return x0 <= posX && posX <= x1 && y0 <= posY && posY <= y1;
+                    });
+                }
+
+                // WICHTIG: Hier findet die Synchronisation statt. 
+                // Statt nur die Farbe zu ändern, informieren wir Redux.
+                dispatch(setSelectedItems(selectedData));
+            });
+
+        // Brush-Gruppe hinzufügen
+        this.svg.append("g")
+            .attr("class", "brush")
+            .call(brush);
     }
 }
 export default ScatterplotD3;

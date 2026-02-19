@@ -71,6 +71,7 @@ function ScatterplotContainer({xAttributeName, yAttributeName}){
         const scatterplotD3 = scatterplotD3Ref.current;
         // call renderScatterplot of ScatterplotD3...;
         scatterplotD3.renderScatterplot(visData, xAttributeName, yAttributeName, controllerMethods);
+        scatterplotD3.renderBrush(visData, xAttributeName, yAttributeName, dispatch, setSelectedItems);
     },[visData, xAttributeName, yAttributeName, dispatch]);// if dependencies, useEffect is called after each data update, in our case only visData changes.
 
     useEffect(()=>{

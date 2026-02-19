@@ -1,0 +1,17 @@
+.scatterplotDivContainer{
+    height: 100%;
+}
+
+.d3-tooltip {
+    position: absolute;
+    text-align: left;
+    padding: 8px;
+    font: 12px sans-serif;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 4px;
+    pointer-events: none; /* Wichtig! */
+    z-index: 1000;
+    line-height: 1.4;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
