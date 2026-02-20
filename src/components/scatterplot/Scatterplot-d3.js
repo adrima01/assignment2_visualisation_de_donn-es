@@ -46,6 +46,22 @@ class ScatterplotD3 {
         this.svg.append("g")
             .attr("class","yAxisG")
         ;
+        this.svg.append("text")
+        .attr("class", "x-axis-label")
+        .attr("text-anchor", "middle")
+        .attr("x", this.width / 2)
+        .attr("y", this.height + this.margin.bottom - 10)
+        .style("font-size", "12px")
+        .text("X Axis");
+
+        this.svg.append("text")
+            .attr("class", "y-axis-label")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -this.height / 2)
+            .attr("y", -this.margin.left + 40)
+            .style("font-size", "12px")
+            .text("Y Axis");
     }
 
     changeBorderAndOpacity(selection, selected){
@@ -106,14 +122,15 @@ class ScatterplotD3 {
             .transition().duration(500)
             .call(d3.axisLeft(this.yScale))
         ;
+        this.svg.select(".x-axis-label")
+            .text(xAttribute);
+
+        this.svg.select(".y-axis-label")
+            .text(yAttribute);
     }
 
 
-    renderScatterplot = function (visData, xAttribute, yAttribute, controllerMethods){
-
-        //STRATIFY ICI??????
-
-        
+    renderScatterplot = function (visData, xAttribute, yAttribute, controllerMethods){        
         console.log("render scatterplot with a new data list ...")
 
         // build the size scales and x,y axis
@@ -156,9 +173,8 @@ class ScatterplotD3 {
         d3.select(this.el).selectAll("*").remove();
     }
 
-
+    // brushing
     renderBrush = function(visData, xAttribute, yAttribute, dispatch, setSelectedItems) {
-        // Falls bereits ein Brush existiert, entfernen oder überschreiben
         this.svg.select(".brush").remove();
 
         const brush = d3.brush()
@@ -170,20 +186,15 @@ class ScatterplotD3 {
                 if (selection) {
                     const [[x0, y0], [x1, y1]] = selection;
 
-                    // Wir nutzen die Logik aus deinem Beispiel, passen sie aber an dein Datenmodell an
                     selectedData = visData.filter(d => {
                         const posX = this.xScale(d[xAttribute]);
                         const posY = this.yScale(d[yAttribute]);
                         return x0 <= posX && posX <= x1 && y0 <= posY && posY <= y1;
                     });
                 }
-
-                // WICHTIG: Hier findet die Synchronisation statt. 
-                // Statt nur die Farbe zu ändern, informieren wir Redux.
                 dispatch(setSelectedItems(selectedData));
             });
 
-        // Brush-Gruppe hinzufügen
         this.svg.append("g")
             .attr("class", "brush")
             .call(brush);

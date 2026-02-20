@@ -14,31 +14,15 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="App" style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div className="App">
       <header>
-        <h1>City Finder: Criminality vs. Income</h1>
+        <h1>Find your city / state !</h1>
       </header>
       
-      <div className="main-content" style={{ 
-        display: 'flex', 
-        flexDirection: 'row', 
-        height: '80vh',
-        padding: '20px', 
-        gap: '20px',
-        alignItems: 'stretch' 
-      }}>
-        
-        <div style={{ 
-          flex: '1',
-          border: '1px solid #ddd', 
-          borderRadius: '8px', 
-          padding: '10px',
-          background: '#fff',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <h3 style={{ margin: '0 0 10px 0' }}>Scatterplot</h3>
-          <div style={{ flex: 1, minHeight: 0 }}> {}
+      <div className="main-content">
+        <div className="chart-container">
+          <h3 className="chart-title">Scatterplot</h3>
+          <div className="chart-wrapper">
             <ScatterplotContainer 
               xAttributeName={"medIncome"} 
               yAttributeName={"ViolentCrimesPerPop"} 
@@ -46,26 +30,15 @@ function App() {
           </div>
         </div>
 
-
-        <div style={{ 
-          flex: '1',
-          border: '1px solid #ddd', 
-          borderRadius: '8px', 
-          padding: '10px',
-          background: '#fff',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden'
-        }}>
-          <h3 style={{ margin: '0 0 10px 0' }}>Hierarchy: State & Community</h3>
-          <div style={{ flex: 1, minHeight: 0, position: 'relative' }}> 
+        <div className="chart-container hierarchy-box">
+          <h3 className="chart-title">Hierarchy: Treemap (click on state title to zoom in)</h3>
+          <div className="chart-wrapper"> 
             <HierarchyContainer 
               sizeAttribute={"population"} 
               colorAttribute={"ViolentCrimesPerPop"} 
             />
           </div>
         </div>
-
       </div>
     </div>
   );

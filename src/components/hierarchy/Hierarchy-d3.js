@@ -154,14 +154,30 @@ class HierarchyD3 {
 
     highlightSelectedItems(selectedItems) {
         if (!this.chartArea) return;
-        const selectedIndices = new Set(selectedItems.map(d => `node-${d.index}`));
+
+        const selectedIndices = new Set(selectedItems.map(d => d.index));
         const hasSelection = selectedIndices.size > 0;
-        this.chartArea.selectAll("rect")
+
+        this.chartArea.selectAll("g.cell")
             .filter(d => d.depth === 2)
-            .transition().duration(250)
-            .style("opacity", d => (!hasSelection || selectedIndices.has(d.id)) ? 1 : 0.2)
-            .attr("stroke", d => selectedIndices.has(d.id) ? "#000" : "#fff")
-            .attr("stroke-width", d => selectedIndices.has(d.id) ? "2px" : "1px");
+            .selectAll("rect")
+            .data(d => [d]) 
+            .join(
+                enter => enter,
+                update => {
+                    update.transition().duration(250)
+                        .style("opacity", d => {
+                            return (!hasSelection || selectedIndices.has(d.data.index)) ? 1 : 0.2;
+                        })
+                        .attr("stroke", d => {
+                            return selectedIndices.has(d.data.index) ? "#000" : "#fff";
+                        })
+                        .attr("stroke-width", d => {
+                            return selectedIndices.has(d.data.index) ? "2px" : "1px";
+                        });
+                },
+                exit => exit
+            );
     }
 
     resetZoom() {
