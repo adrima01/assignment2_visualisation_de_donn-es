@@ -21,7 +21,7 @@ function App() {
       
       <div className="main-content">
         <div className="chart-container">
-          <h3 className="chart-title">Scatterplot</h3>
+          <h3 className="chart-title">Scatterplot (use brush to select)</h3>
           <div className="chart-wrapper">
             <ScatterplotContainer 
               xAttributeName={"medIncome"} 
